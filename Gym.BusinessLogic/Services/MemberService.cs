@@ -34,7 +34,7 @@ namespace Gym.BusinessLogic.Services
             var phone = model.Phone.Trim().ToLower();
             var name = model.Name.Trim().ToLower();
 
-            if (await memberRepo.ExistAsync(m => m.Email == email, cancellationToken))
+            if (await memberRepo.ExistsAsync(m => m.Email == email, cancellationToken))
             {
                 return false;
             }
@@ -78,6 +78,48 @@ namespace Gym.BusinessLogic.Services
             await memberRepo.SaveChangesAsync(cancellationToken);
 
             return true;
+        }
+
+        public async Task<MemberDetailsViewModel?> GetDetailsAsync(int id, CancellationToken cancellationToken = default)
+        {
+            // Get member with their memberships included
+            var member = await memberRepo.GetByIdAsync(
+                id: id,
+                cancellationToken: cancellationToken,
+                m => m.MemberShips
+            );
+
+            if (member == null)
+            {
+                return null;
+            }
+
+            // Get the latest membership if available
+            var latestMembership = member.MemberShips?
+                .OrderByDescending(ms => ms.EndDate)
+                .FirstOrDefault();
+
+            return new MemberDetailsViewModel
+            {
+                Id = member.Id,
+                Name = member.Name,
+                PhotoUrl = member.Photo,
+                Email = member.Email,
+                PhoneNumber = member.Phone,
+                Gender = member.Gender.ToString(),
+                DateOfBirth = member.DateOfBirth.ToString("yyyy-MM-dd"),
+                Address = member.Address != null
+                    ? $"{member.Address.BuildingNumber}, {member.Address.Street}, {member.Address.City}"
+                    : string.Empty,
+                PlanName = latestMembership?.Plan?.Name ?? string.Empty,
+                MembershipStartDate = latestMembership?.StartDate.ToString("yyyy-MM-dd") ?? string.Empty,
+                MembershipEndDate = latestMembership?.EndDate.ToString("yyyy-MM-dd") ?? string.Empty
+            };
+        }
+
+        public Task<string?> GetByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

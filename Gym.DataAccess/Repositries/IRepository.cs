@@ -1,4 +1,5 @@
 ﻿using Gym.DataAccess.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,11 @@ namespace Gym.DataAccess.Repositries
         Task<IReadOnlyList<TEntity>> GetAllAsync(
             CancellationToken cancellationToken = default);
 
-        Task<TEntity?> GetByIdAsync(
-            int id,
-            CancellationToken cancellationToken = default);
 
+        Task<TEntity?> GetByIdAsync(
+         int id,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<TEntity, object>>[] includes);
         Task<TEntity?> GetByIdIncludingDeletedAsync(
             int id,
             CancellationToken cancellationToken = default);
@@ -27,9 +29,11 @@ namespace Gym.DataAccess.Repositries
         //FindAsync x=> x.Name
 
 
-        Task<bool>ExistAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
 
 
+        Task<bool> ExistsAsync(
+             Expression<Func<TEntity, bool>> predicate,
+            CancellationToken cancellationToken = default);
         Task AddAsync (TEntity entity , CancellationToken cancellationToken = default);
 
 

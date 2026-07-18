@@ -20,6 +20,10 @@ namespace Gym.BusinessLogic.Services
         public Task<IEnumerable<MemberIndexViewModel>> GetAllAsync(CancellationToken cancellationToken = default);
 
         public Task <bool> CreateAsync(CreateMemberViewModel model, CancellationToken cancellationToken = default);
+
+
+        Task<MemberDetailsViewModel?> GetDetailsAsync(int id, CancellationToken cancellationToken = default);
+        Task<string?> GetByIdAsync(int id, CancellationToken cancellationToken);
     }
 
 
