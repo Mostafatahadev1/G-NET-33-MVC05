@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Gym.BusinessLogic.ViewModel.Members;
+using Gym.BusinessLogic.ViewModel.HealthRecords;
 
 namespace Gym.BusinessLogic.Services
 
@@ -24,6 +25,9 @@ namespace Gym.BusinessLogic.Services
 
         Task<MemberDetailsViewModel?> GetDetailsAsync(int id, CancellationToken cancellationToken = default);
         Task<string?> GetByIdAsync(int id, CancellationToken cancellationToken);
+
+
+        Task<HealthRecordDetailsViewModel>GetHealthRecordAsync(int id, CancellationToken cancellationToken = default);
     }
 
 

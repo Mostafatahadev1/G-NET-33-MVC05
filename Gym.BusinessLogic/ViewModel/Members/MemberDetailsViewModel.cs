@@ -12,7 +12,7 @@ namespace Gym.BusinessLogic.ViewModel.Members
 
         public string Name { get; set; } = null!;
 
-        public string? PhotoUrl { get; set; } 
+        public string? PhotoUrl { get; set; }
 
 
         public string Email { get; set; } = null!;
@@ -31,7 +31,7 @@ namespace Gym.BusinessLogic.ViewModel.Members
 
         public string MembershipStartDate { get; set; } = null!;
 
-        public string MembershipEndDate { get; set;} = null!;
+        public string MembershipEndDate { get; set; } = null!;
 
 
 

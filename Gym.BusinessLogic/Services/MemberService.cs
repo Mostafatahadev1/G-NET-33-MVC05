@@ -1,4 +1,5 @@
-﻿using Gym.BusinessLogic.ViewModel.Members;
+﻿using Gym.BusinessLogic.ViewModel.HealthRecords;
+using Gym.BusinessLogic.ViewModel.Members;
 using Gym.DataAccess.Entities;
 using Gym.DataAccess.Enums;
 using Gym.DataAccess.Repositries;
@@ -12,6 +13,8 @@ namespace Gym.BusinessLogic.Services
 {
     public class MemberService(IMemberRepository memberRepo) : IMemberService
     {
+
+
         public async Task<IEnumerable<MemberIndexViewModel>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var members = await memberRepo.GetAllAsync(cancellationToken);
@@ -120,6 +123,24 @@ namespace Gym.BusinessLogic.Services
         public Task<string?> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<HealthRecordDetailsViewModel?> GetHealthRecordAsync(int id, CancellationToken cancellationToken = default)
+        {
+            var member = await memberRepo.GetByIdAsync(id, cancellationToken);
+
+            if (member == null)
+            {
+                throw new InvalidOperationException("Member not found.");
+            }
+
+            return new HealthRecordDetailsViewModel
+            {
+                Height = member.HealthRecord.Height,
+                Weight = member.HealthRecord.Weight,
+                BloodType = member.HealthRecord.BloodType.ToString(),
+                Note = member.HealthRecord.Notes
+            };
         }
     }
 }

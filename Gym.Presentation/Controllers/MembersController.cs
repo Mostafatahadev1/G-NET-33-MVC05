@@ -54,5 +54,20 @@ namespace Gym.Presentation.Controllers
             }
             return View(memberItem);
         }
+
+
+        [HttpGet]
+
+        public async Task<IActionResult> HealthRecord(int id, CancellationToken cancellationToken)
+        {
+            var HealthRecord = await members.GetHealthRecordAsync(id,cancellationToken);
+
+            if (HealthRecord == null)
+            {
+                return NotFound();
+            }
+
+            return View(HealthRecord);
+        }
     }
 }
