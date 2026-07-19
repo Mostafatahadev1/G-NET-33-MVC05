@@ -43,5 +43,31 @@ namespace Gym.Presentation.Controllers
         // 1- jquery.Validate.min.js => Clinet side Validation (unobtrusive vaildation )
 
         // 2- Vaildate.Unbrostive.min.js => Clinet side vaildation 
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
+        {
+            var memberItem = await members.GetDetailsAsync(id, cancellationToken);
+            if (memberItem == null)
+            {
+                return NotFound();
+            }
+            return View(memberItem);
+        }
+
+
+        [HttpGet]
+
+        public async Task<IActionResult> HealthRecord(int id, CancellationToken cancellationToken)
+        {
+            var HealthRecord = await members.GetHealthRecordAsync(id,cancellationToken);
+
+            if (HealthRecord == null)
+            {
+                return NotFound();
+            }
+
+            return View(HealthRecord);
+        }
     }
 }

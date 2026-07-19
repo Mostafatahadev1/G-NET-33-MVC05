@@ -18,11 +18,25 @@ namespace Gym.DataAccess.Repositries
 
         private readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
         public async Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
-        => await _dbSet.AsNoTracking().ToListAsync(cancellationToken); 
+        => await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
 
-        public async Task<TEntity?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
-           => await _dbSet.FirstOrDefaultAsync(t=>t.Id == id, cancellationToken);
 
+
+        public async Task<TEntity?> GetByIdAsync(
+            int id,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<TEntity, object>>[] includes)
+            {
+                 IQueryable<TEntity> query = _dbSet;
+
+                 foreach (var include in includes)
+                     {
+                           query = query.Include(include);
+                     }
+
+             return await query.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+            }
+    
         public async Task<TEntity?> GetByIdIncludingDeletedAsync(
                  int id, CancellationToken cancellationToken = default)
           => await _dbSet.IgnoreQueryFilters().FirstOrDefaultAsync(t => t.Id == id, cancellationToken);
@@ -35,9 +49,15 @@ namespace Gym.DataAccess.Repositries
         =>await _dbSet.AnyAsync(predicate, cancellationToken);
 
         public async Task<IReadOnlyList<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+
+
            => await _dbSet.Where(predicate).ToListAsync(cancellationToken);
 
-   
+
+
+
+
+
 
         public Task SoftDeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
@@ -52,5 +72,10 @@ namespace Gym.DataAccess.Repositries
 
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
        =>_dbContext.SaveChangesAsync(cancellationToken);
+
+        public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
